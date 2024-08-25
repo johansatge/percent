@@ -50,7 +50,6 @@ function ValuesToPercentage() {
 function PercentageToValue() {
   const [percentage, setPercentage] = useState('')
   const [totalValue, setTotalValue] = useState('')
-  const [copiedStatus, setCopiedStatus] = useState(null)
 
   const result = parseFloat(cleanNum(percentage)) * parseFloat(cleanNum(totalValue)) / 100
   const isValid = !isNaN(result)
