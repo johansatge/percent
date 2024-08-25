@@ -21,6 +21,14 @@ h1 {
   margin: 30px 0 30px 0;
 }
 
+h2 {
+  font-size: 18px;
+  min-width: 680px;
+  margin: 0 20px 15px 20px;
+  display: inline-block;
+  text-align: left;
+}
+
 section {
   padding: 25px;
   min-width: 680px;

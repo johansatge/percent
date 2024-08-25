@@ -8,7 +8,9 @@ function cleanNum(str) {
 function App() {
   return html`
     <h1>🖩 Percentage calculator</h1>
+    <h2>Values to percentage</h2>
     <${ValuesToPercentage} />
+    <h2>Percentage to value</h2>
     <${PercentageToValue} />
     <${Footer} />
   `
