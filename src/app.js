@@ -17,50 +17,30 @@ function App() {
 function ValuesToPercentage() {
   const [baseValue, setBaseValue] = useState('')
   const [totalValue, setTotalValue] = useState('')
-  const [copiedStatus, setCopiedStatus] = useState(null)
 
-  const percentage = parseFloat(cleanNum(baseValue)) * 100 / parseFloat(cleanNum(totalValue))
-  const isValid = !isNaN(percentage)
-  const readablePercentage = isValid
-    ? (Math.round(percentage * 1000) / 1000) + '%'
+  const result = parseFloat(cleanNum(baseValue)) * 100 / parseFloat(cleanNum(totalValue))
+  const isValid = !isNaN(result)
+  const readableResult = isValid
+    ? (Math.round(result * 1000) / 1000) + '%'
     : baseValue.length > 0 && totalValue.length > 0 ? 'Invalid value' : ''
-
-  function onCopyResult() {
-    navigator.clipboard.writeText(readablePercentage)
-      .then(() => setCopiedStatus('Copied!'))
-      .catch((err) => setCopiedStatus('Error'))
-      .finally(() => setTimeout(() => setCopiedStatus(null), 1000))
-  }
 
   return html`
     <section>
-      <label>
-        <input
-          type="text"
-          value=${baseValue}
-          placeholder="25"
-          onInput=${(evt) => setBaseValue(evt.currentTarget.value)}
-        />
-      </label>
-      <label>
-        <span>on a total of</span>
-        <input
-          type="text"
-          value=${totalValue}
-          placeholder="100"
-          onInput=${(evt) => setTotalValue(evt.currentTarget.value)}
-        />
-      </label>
-      <label>
-        <span>is</span>
-        <input
-          type="text"
-          placeholder="25%"
-          readonly
-          value=${readablePercentage}
-        />
-      </label>
-      <button disabled=${!isValid} onClick=${onCopyResult}>${copiedStatus || 'Copy'}</button>
+      <input
+        type="text" value=${baseValue} placeholder="25"
+        onInput=${(evt) => setBaseValue(evt.currentTarget.value)}
+      />
+      <span>on a total of</span>
+      <input
+        type="text" value=${totalValue} placeholder="100"
+        onInput=${(evt) => setTotalValue(evt.currentTarget.value)}
+      />
+      <span>is</span>
+      <input
+        type="text" laceholder="25%" readonly
+        value=${readableResult}
+      />
+      <${CopyButton} value=${readableResult} disabled=${!isValid} />
     </section>
   `
 }
@@ -76,42 +56,40 @@ function PercentageToValue() {
     ? (Math.round(result * 1000) / 1000)
     : percentage.length > 0 && totalValue.length > 0 ? 'Invalid value' : ''
 
-  function onCopyResult() {
-    navigator.clipboard.writeText(readableResult)
+  return html`
+    <section>
+      <input
+        type="text" value=${percentage} placeholder="25"
+        onInput=${(evt) => setPercentage(evt.currentTarget.value)}
+      />% of
+      <input
+        type="text" value=${totalValue} placeholder="100"
+        onInput=${(evt) => setTotalValue(evt.currentTarget.value)}
+      />
+      <span>is</span>
+      <input
+        type="text" placeholder="25" readonly
+        value=${readableResult}
+      />
+      <${CopyButton} value=${readableResult} disabled=${!isValid} />
+    </section>
+  `
+}
+
+function CopyButton({ value, disabled }) {
+  const [copiedStatus, setCopiedStatus] = useState(null)
+
+  function onClick() {
+    navigator.clipboard.writeText(value)
       .then(() => setCopiedStatus('Copied!'))
       .catch((err) => setCopiedStatus('Error'))
       .finally(() => setTimeout(() => setCopiedStatus(null), 1000))
   }
 
   return html`
-    <section>
-      <label>
-        <input
-          type="text"
-          value=${percentage}
-          placeholder="25"
-          onInput=${(evt) => setPercentage(evt.currentTarget.value)}
-        />% of
-      </label>
-      <label>
-        <input
-          type="text"
-          value=${totalValue}
-          placeholder="100"
-          onInput=${(evt) => setTotalValue(evt.currentTarget.value)}
-        />
-      </label>
-      <label>
-        <span>is</span>
-        <input
-          type="text"
-          placeholder="25"
-          readonly
-          value=${readableResult}
-        />
-      </label>
-      <button disabled=${!isValid} onClick=${onCopyResult}>${copiedStatus || 'Copy'}</button>
-    </section>
+    <button disabled=${disabled} onClick=${onClick}>
+      ${copiedStatus || 'Copy'}
+    </button>
   `
 }
 
