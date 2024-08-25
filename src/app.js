@@ -1,6 +1,10 @@
 const { render, useState, useEffect, html } = window.standalonePreact
 render(html`<${App} />`, document.querySelector('#root'))
 
+function cleanNum(str) {
+  return str.replaceAll(',', '').replaceAll(' ', '')
+}
+
 function App() {
   return html`
     <h1>🖩 Percentage calculator</h1>
@@ -20,10 +24,6 @@ function ValuesToPercentage() {
   const readablePercentage = isValid
     ? (Math.round(percentage * 1000) / 1000) + '%'
     : baseValue.length > 0 && totalValue.length > 0 ? 'Invalid value' : ''
-
-  function cleanNum(value) {
-    return value.replaceAll(',', '').replaceAll(' ', '')
-  }
 
   function onCopyResult() {
     navigator.clipboard.writeText(readablePercentage)
@@ -66,18 +66,39 @@ function ValuesToPercentage() {
 }
 
 function PercentageToValue() {
+  const [percentage, setPercentage] = useState('')
+  const [totalValue, setTotalValue] = useState('')
+  const [copiedStatus, setCopiedStatus] = useState(null)
+
+  const result = parseFloat(cleanNum(percentage)) * parseFloat(cleanNum(totalValue)) / 100
+  const isValid = !isNaN(result)
+  const readableResult = isValid
+    ? (Math.round(result * 1000) / 1000)
+    : percentage.length > 0 && totalValue.length > 0 ? 'Invalid value' : ''
+
+  function onCopyResult() {
+    navigator.clipboard.writeText(readableResult)
+      .then(() => setCopiedStatus('Copied!'))
+      .catch((err) => setCopiedStatus('Error'))
+      .finally(() => setTimeout(() => setCopiedStatus(null), 1000))
+  }
+
   return html`
     <section>
       <label>
         <input
           type="text"
+          value=${percentage}
           placeholder="25"
+          onInput=${(evt) => setPercentage(evt.currentTarget.value)}
         />% of
       </label>
       <label>
         <input
           type="text"
+          value=${totalValue}
           placeholder="100"
+          onInput=${(evt) => setTotalValue(evt.currentTarget.value)}
         />
       </label>
       <label>
@@ -86,9 +107,10 @@ function PercentageToValue() {
           type="text"
           placeholder="25"
           readonly
+          value=${readableResult}
         />
       </label>
-      <button>Copy</button>
+      <button disabled=${!isValid} onClick=${onCopyResult}>${copiedStatus || 'Copy'}</button>
     </section>
   `
 }
