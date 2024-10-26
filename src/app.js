@@ -12,6 +12,8 @@ function App() {
     <${ValuesToPercentage} />
     <h2>Percentage to value</h2>
     <${PercentageToValue} />
+    <h2>Percentage of percentage</h2>
+    <${PercentageOfPercentage} />
     <${Footer} />
   `
 }
@@ -55,6 +57,30 @@ function PercentageToValue() {
       <${TextInput} value=${totalValue} placeholder="100" onInput=${setTotalValue} />
       <span>is</span>
       <${TextInput} value=${readableResult} placeholder="25" isReadonly=true /> 
+      <${CopyButton} value=${readableResult} disabled=${!isValid} />
+    </section>
+  `
+}
+
+function PercentageOfPercentage() {
+  const [percentage, setPercentage] = useState('')
+  const [parentPercentage, setParentPercentage] = useState('')
+
+  const percentageNum = parseFloat(cleanNum(percentage))
+  const parentPercentageNum = parseFloat(cleanNum(parentPercentage))
+  const result = ((percentageNum / 100) * (parentPercentageNum / 100)) * 100
+  const isValid = !isNaN(result)
+  const readableResult = isValid
+    ? (Math.round(result * 1000) / 1000) + '%'
+    : percentage.length > 0 && parentPercentage.length > 0 ? 'Invalid value' : ''
+
+  return html`
+    <section>
+      <${TextInput} value=${percentage} placeholder="25" onInput=${setPercentage} />
+      <span>% of</span>
+      <${TextInput} value=${parentPercentage} placeholder="50" onInput=${setParentPercentage} />
+      <span>% is</span>
+      <${TextInput} value=${readableResult} placeholder="12.5%" isReadonly=true /> 
       <${CopyButton} value=${readableResult} disabled=${!isValid} />
     </section>
   `
