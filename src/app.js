@@ -28,20 +28,11 @@ function ValuesToPercentage() {
 
   return html`
     <section>
-      <input
-        type="text" value=${baseValue} placeholder="25"
-        onInput=${(evt) => setBaseValue(evt.currentTarget.value)}
-      />
+      <${TextInput} value=${baseValue} placeholder="25" onInput=${setBaseValue} />
       <span>on a total of</span>
-      <input
-        type="text" value=${totalValue} placeholder="100"
-        onInput=${(evt) => setTotalValue(evt.currentTarget.value)}
-      />
+      <${TextInput} value=${totalValue} placeholder="100" onInput=${setTotalValue} />
       <span>is</span>
-      <input
-        type="text" laceholder="25%" readonly
-        value=${readableResult}
-      />
+      <${TextInput} value=${readableResult} placeholder="25%" isReadonly=true />
       <${CopyButton} value=${readableResult} disabled=${!isValid} />
     </section>
   `
@@ -59,21 +50,28 @@ function PercentageToValue() {
 
   return html`
     <section>
-      <input
-        type="text" value=${percentage} placeholder="25"
-        onInput=${(evt) => setPercentage(evt.currentTarget.value)}
-      />% of
-      <input
-        type="text" value=${totalValue} placeholder="100"
-        onInput=${(evt) => setTotalValue(evt.currentTarget.value)}
-      />
+      <${TextInput} value=${percentage} placeholder="25" onInput=${setPercentage} />
+      <span>% of</span>
+      <${TextInput} value=${totalValue} placeholder="100" onInput=${setTotalValue} />
       <span>is</span>
-      <input
-        type="text" placeholder="25" readonly
-        value=${readableResult}
-      />
+      <${TextInput} value=${readableResult} placeholder="25" isReadonly=true /> 
       <${CopyButton} value=${readableResult} disabled=${!isValid} />
     </section>
+  `
+}
+
+function TextInput({
+  onInput = () => {},
+  value = '',
+  placeholder = '',
+  isReadonly = false
+}) {
+  return html`
+    <input
+      type="text" placeholder=${placeholder}
+      value=${value} readonly=${isReadonly}
+      onInput=${(evt) => onInput(evt.currentTarget.value)}
+    />
   `
 }
 
